@@ -6,6 +6,7 @@
         "buildType": "apk"
       },
       "ios": {
+        "deploymentTarget": "15.1",
         "simulator": true,
         "image": "latest"
       }

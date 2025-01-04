@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import * as Location from 'expo-location'
 import { YStack, Button, Text, Input, Spinner } from 'tamagui'
-import { MapPin, Navigation } from 'lucide-react'
 
 interface LocationPickerProps {
   onLocationSelect: (location: { latitude: number; longitude: number; address: string }) => void
@@ -90,16 +89,12 @@ export function LocationPicker({ onLocationSelect, currentLocation }: LocationPi
         <YStack backgroundColor="$gray5" padding="$3" borderRadius="$2" space="$2">
           <Text fontWeight="bold">Aktueller Standort:</Text>
           <Text>{currentLocation.address}</Text>
-          <Button onPress={getCurrentLocation} icon={<Navigation size={20} />} variant="outlined">
+          <Button onPress={getCurrentLocation} variant="outlined">
             Aktualisieren
           </Button>
         </YStack>
       ) : (
-        <Button
-          onPress={getCurrentLocation}
-          icon={loading ? <Spinner /> : <MapPin size={20} />}
-          disabled={loading}
-        >
+        <Button onPress={getCurrentLocation} disabled={loading}>
           Standort ermitteln
         </Button>
       )}

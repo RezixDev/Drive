@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View, FlatList, RefreshControl } from 'react-native'
 import { YStack, XStack, Text, Button, Card } from 'tamagui'
 import { useRouter } from 'solito/router'
-import { Plus, Download } from 'lucide-react'
 import { getFahrtenbuchEntries, exportFahrtenbuchData } from '../api/database'
 import type { FahrtenbuchEntry } from '../api/database' // Import type from database file
 
@@ -63,18 +62,8 @@ export function HistoryScreen() {
           Fahrtenbuch
         </Text>
         <XStack space="$2">
-          <Button
-            icon={<Download size={24} color="white" />}
-            onPress={handleExport}
-            backgroundColor="$gray10"
-            color="white"
-          />
-          <Button
-            icon={<Plus size={24} color="white" />}
-            onPress={() => router.push('/')}
-            backgroundColor="$blue10"
-            color="white"
-          />
+          <Button onPress={handleExport} backgroundColor="$gray10" color="white" />
+          <Button onPress={() => router.push('/')} backgroundColor="$blue10" color="white" />
         </XStack>
       </XStack>
 

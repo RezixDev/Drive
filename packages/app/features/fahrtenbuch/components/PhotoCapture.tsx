@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { View, Image } from 'react-native'
+import React, { useState, useRef } from 'react'
+import { View, StyleSheet } from 'react-native'
 import { CameraView, useCameraPermissions } from 'expo-camera'
 import { YStack, Button, Text } from 'tamagui'
-import { Camera as CameraIcon, X, Check } from 'lucide-react'
 
 interface PhotoCaptureProps {
   onCapture: (photoUri: string) => void
@@ -15,6 +14,7 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
   const cameraRef = useRef<CameraView | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isCameraReady, setCameraReady] = useState(false)
+
   const onCameraReady = () => {
     setCameraReady(true)
   }
@@ -36,7 +36,7 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
       }
     } catch (error) {
       console.error('Failed to take picture:', error)
-      // Show error message
+      setError('Failed to take picture')
     }
   }
 
@@ -49,7 +49,7 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
   if (!permission) {
     return (
       <YStack flex={1} justifyContent="center" alignItems="center">
-        <Text>Kamerazugriff wird angefordert...</Text>
+        <Text>Requesting camera access...</Text>
       </YStack>
     )
   }
@@ -57,16 +57,15 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
   if (!permission.granted) {
     return (
       <YStack flex={1} justifyContent="center" alignItems="center" space="$4" padding="$4">
-        <Text>Kein Zugriff auf die Kamera</Text>
+        <Text>Camera access not granted</Text>
         <Text color="$gray11" textAlign="center">
-          Bitte aktivieren Sie den Kamerazugriff in den Einstellungen, um den Kilometerstand zu
-          fotografieren.
+          Please enable camera access in settings to take a photo.
         </Text>
         <Button onPress={requestPermission} backgroundColor="$blue10" color="white">
-          Zugriff erlauben
+          Allow Access
         </Button>
         <Button onPress={onCancel} backgroundColor="$red10" color="white">
-          Schließen
+          Close
         </Button>
       </YStack>
     )
@@ -75,7 +74,7 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
   if (previewUri) {
     return (
       <YStack flex={1}>
-        <Image source={{ uri: previewUri }} style={{ flex: 1 }} resizeMode="contain" />
+        <View style={styles.imageContainer}></View>
         <YStack
           position="absolute"
           bottom={0}
@@ -85,21 +84,11 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
           backgroundColor="$background"
           space="$2"
         >
-          <Button
-            onPress={confirmPicture}
-            backgroundColor="$green10"
-            icon={<Check size={24} color="white" />}
-            color="white"
-          >
-            Foto verwenden
+          <Button onPress={confirmPicture} backgroundColor="$green10" color="white">
+            Use Photo
           </Button>
-          <Button
-            onPress={() => setPreviewUri(null)}
-            backgroundColor="$red10"
-            icon={<X size={24} color="white" />}
-            color="white"
-          >
-            Neu aufnehmen
+          <Button onPress={() => setPreviewUri(null)} backgroundColor="$red10" color="white">
+            Retake
           </Button>
         </YStack>
       </YStack>
@@ -110,12 +99,11 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
     <YStack flex={1}>
       <CameraView
         ref={cameraRef}
-        style={{ flex: 1 }}
+        style={styles.camera}
         facing="back"
         ratio="16:9"
         autofocus="on"
         mode="picture"
-        animateShutter={true}
         onMountError={(error) => {
           console.error('Camera mount error:', error)
           setError('Failed to initialize camera')
@@ -129,20 +117,9 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
         )}
         {!isCameraReady && !error && (
           <YStack flex={1} justifyContent="center" alignItems="center">
-            <Text>Kamera wird initialisiert...</Text>
+            <Text>Initializing camera...</Text>
           </YStack>
         )}
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        />
       </CameraView>
 
       <YStack
@@ -157,21 +134,28 @@ export function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
         <Button
           onPress={takePicture}
           backgroundColor="$blue10"
-          icon={<CameraIcon size={24} color="white" />}
           color="white"
           disabled={!isCameraReady}
         >
-          Kilometerstand fotografieren
+          Take Photo
         </Button>
-        <Button
-          onPress={onCancel}
-          backgroundColor="$red10"
-          icon={<X size={24} color="white" />}
-          color="white"
-        >
-          Abbrechen
+        <Button onPress={onCancel} backgroundColor="$red10" color="white">
+          Cancel
         </Button>
       </YStack>
     </YStack>
   )
 }
+
+const styles = StyleSheet.create({
+  camera: {
+    flex: 1,
+  },
+  imageContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  previewImage: {
+    flex: 1,
+  },
+})

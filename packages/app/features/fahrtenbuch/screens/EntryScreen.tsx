@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { View, Image } from 'react-native'
 import { YStack, XStack, Button, Text, Input } from 'tamagui'
-import { Camera } from 'lucide-react'
 import { useRouter } from 'solito/router'
 import { PhotoCapture } from '../components/PhotoCapture'
+
 import { LocationPicker } from '../components/LocationPicker'
 import { saveFahrtenbuchEntry } from '../api/database'
 import type { FahrtenbuchEntry, Location } from '../types'
@@ -59,11 +59,9 @@ export function EntryScreen() {
       // Show error message
     }
   }
-
   if (showCamera) {
     return <PhotoCapture onCapture={handlePhotoCapture} onCancel={() => setShowCamera(false)} />
   }
-
   return (
     <YStack padding="$4" space="$4">
       <Text fontSize="$6" fontWeight="bold">
@@ -80,7 +78,7 @@ export function EntryScreen() {
             onChangeText={(text) => setEntry((prev) => ({ ...prev, mileage: text }))}
             placeholder="Aktueller Kilometerstand"
           />
-          <Button icon={<Camera size={24} />} onPress={() => setShowCamera(true)} />
+          <Button onPress={() => setShowCamera(true)} />
         </XStack>
       </YStack>
 
